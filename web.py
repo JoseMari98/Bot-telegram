@@ -24,3 +24,7 @@ ejem = {"name":name,"price":price}
 id = collection.insert_one(ejem).inserted_id
 
 print(id)
+
+ejem1 = collection.find({"name":name})
+for doc in ejem1:
+    print(doc)

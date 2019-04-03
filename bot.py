@@ -17,19 +17,38 @@ bot = telebot.TeleBot(token)  # Creamos el objeto de nuestro bot.
 
 #############################################
 
+#Start
+
+@bot.message_handler(commands=['start'])  # Indicamos que lo siguiente va a controlar el comando '/ayuda'
+def command_start(m):  # Definimos una función que resuleva lo que necesitemos.
+
+    id = m.chat.id  # Guardamos el ID de la conversación para poder responder.
+
+    bot.send_message(id, "Ya estas registrado")  # Enviando ...
+
+    client = MongoClient(mongo)
+    db = client.test
+    collection = db.user
+    ejem = {"id": id}
+    id_bd = collection.insert_one(ejem).inserted_id
+
 # Listener
 
 def listener(messages):  # Con esto, estamos definiendo una función llamada 'listener', que recibe como parámetro un dato llamado 'messages'.
 
     for m in messages:  # Por cada dato 'm' en el dato 'messages'
+        client = MongoClient(mongo)
+        db = client.test
+        collection = db.user
+        try:
+            id_bd = collection.find({"id":m.chat.id})
+        except:
+            print("error")
 
-        cid = m.chat.id  # El Cid es el identificador del chat los negativos son grupos y positivos los usuarios
-
-        if cid > 0:
-
-            mensaje = str(m.chat.first_name) + " [" + str(
-                cid) + "]: " + m.text  # Si 'cid' es positivo, usaremos 'm.chat.first_name' para el nombre.
+        text = m.text
+        bot.send_message(m.chat.id, "Buscando su producto")
+        #mandarlo por la cola de mensajes
 
 
-bot.set_update_listener(
-    listener)  # Así, le decimos al bot que utilice como función escuchadora nuestra función 'listener' declarada arriba.
+bot.set_update_listener(listener)  #Así, le decimos al bot que utilice como función escuchadora nuestra función 'listener' declarada arriba.
+bot.polling()
