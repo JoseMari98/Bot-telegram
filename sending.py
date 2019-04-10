@@ -1,20 +1,17 @@
 import pika
-from pymongo import MongoClient
-from private import mongo
+import id_url
 
-client = MongoClient(mongo)
 
-db = MongoClient.test
+def mandarIdyUrl(id, url):
+    objetoIdUrl = id_url
+    objetoIdUrl.id = id
+    objetoIdUrl.url = url
 
-collection = db.datos
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
 
-db.test.find()
+    #channel.queue_declare(queue='IdUrl')
+    channel.basic_publish(exchange="", routing_key='IdUrl', body= "AFUUUUUUUUUUUU")
+    connection.close()
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-channel = connection.channel()
-channel.queue_declare(queue=)
-channel.basic_publish(exchange='',
-                      routing_key='hello',
-                      body='Hello World!')
-print(" [x] Sent 'Hello World!'")
-connection.close()
+#def mandarDatosProducto()
