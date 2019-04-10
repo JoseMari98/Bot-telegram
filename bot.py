@@ -33,9 +33,11 @@ def command_start(m):  # Definimos una función que resuleva lo que necesitemos.
         id_bd = user.find_one({"id":m.chat.id})
     except:
         print("error")
-    if id_bd != m.chat.id:
+    if id_bd["id"] != m.chat.id:
         user.insert_one(ejem)
-        bot.send_message(id, "Ya estas registrado")
+        bot.send_message(id, "Registro completado")
+    else:
+        bot.send_message(id, "Ya estabas registrado previamente")
 
 # Listener
 

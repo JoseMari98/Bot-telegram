@@ -26,5 +26,5 @@ id = collection.insert_one(ejem).inserted_id
 print(id)
 
 ejem1 = collection.find_one({"name":name})
-print(ejem1)
+print(ejem1["name"])
 
