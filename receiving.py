@@ -1,10 +1,13 @@
 import pika
+import Par
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
-#channel.queue_declare(queue='IdUrl')
+
 def callback(ch, method, properties, body): #imprime el contenido del mensaje
-    print("El id es" + body.id + " y la url es " + body.url)
+    objeto = Par.Par("", "")
+    objeto.to_object(body)
+    print("El id es " + str(objeto.id) + " y la url es " + objeto.url)
 
 
 channel.basic_consume(queue='IdUrl', auto_ack=True, on_message_callback=callback)

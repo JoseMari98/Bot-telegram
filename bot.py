@@ -5,7 +5,7 @@ import telebot  # Librería de la API del bot.
 from private import token
 from pymongo import MongoClient
 from private import mongo
-from sending import mandarIdyUrl
+from insert import insert
 from gets import obtenerNombre,obtenerPrecio
 
 from telebot import types  # Tipos para la API del bot.
@@ -47,20 +47,23 @@ def listener(messages):  # Con esto, estamos definiendo una función llamada 'li
     for m in messages:  # Por cada dato 'm' en el dato 'messages'
         client = MongoClient(mongo)
         db = client.test
-        user = db.user
-        #producto = db.producto
-        try:
-            id_bd = user.find({"id":m.chat.id})
-        except:
-            print("error")
+        #user = db.user
+        producto = db.producto
+        #try:
+        #    id_bd = user.find({"id":m.chat.id})
+        #except:
+        #    print("error")
         if m.content_type == 'text' and m.text != "/start":
             url = m.text
             bot.send_message(m.chat.id, "Buscando su producto")
-            #name = obtenerNombre(url)
-            #precio = obtenerPrecio(url)
-            #bot.send_message(m.chat.id, "Nombre: " + name)
-            #bot.send_message(m.chat.id, "Precio: " + precio)
-            mandarIdyUrl(m.chat.id, url)
+
+            #comprobamos que el usuario no tenga este producto en la base de datos
+            name = obtenerNombre(url)
+            esta_producto = producto.find({"id_usuario":m.chat.id, "nombre":name})
+            if esta_producto != None:
+                print("El producto ya se esta analizando")
+            else: #si no esta lo introducimos
+                insert(m.chat.id, url)
 
 bot.set_update_listener(listener)  #Así, le decimos al bot que utilice como función escuchadora nuestra función 'listener' declarada arriba.
 bot.polling()

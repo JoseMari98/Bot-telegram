@@ -1,17 +1,15 @@
 import pika
-import id_url
-
+import Par
 
 def mandarIdyUrl(id, url):
-    objetoIdUrl = id_url
-    objetoIdUrl.id = id
-    objetoIdUrl.url = url
+
+
+    par = Par.Par(id, url)
 
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
 
-    #channel.queue_declare(queue='IdUrl')
-    channel.basic_publish(exchange="", routing_key='IdUrl', body= "AFUUUUUUUUUUUU")
+    channel.basic_publish(exchange="", routing_key='IdUrl', body= par.to_string())
     connection.close()
 
-#def mandarDatosProducto()
+#def mandarDatosProducto():
