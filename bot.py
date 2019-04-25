@@ -23,7 +23,11 @@ bot = telebot.TeleBot(token)  # Creamos el objeto de nuestro bot.
 
 @bot.message_handler(commands=['start'])  # Indicamos que lo siguiente va a controlar el comando '/ayuda'
 def command_start(m):  # Definimos una función que resuleva lo que necesitemos.
-    bot.send_message(m.chat.id, "Bienvenido al amazon scraper, para scrapear un producto manda una url de amazon y para desuscribirte del producto usa el comando /leave+espacio+url")
+    bot.send_message(m.chat.id, "Bienvenido al amazon scraper")
+    bot.send_message(m.chat.id, "Para scrapear un producto manda una url de amazon")
+    bot.send_message(m.chat.id, "Para desuscribirte del producto usa el comando /leave+espacio+url")
+    bot.send_message(m.chat.id, "Para ver tus productos activos usa el comando /productos")
+
     id = m.chat.id  # Guardamos el ID de la conversación para poder responder.
 
     client = MongoClient(mongo)
@@ -37,6 +41,26 @@ def command_start(m):  # Definimos una función que resuleva lo que necesitemos.
         bot.send_message(id, "Registro completado")
     else:
         bot.send_message(id, "Ya estabas registrado previamente")
+
+#Productos
+
+@bot.message_handler(commands=['productos'])  # Indicamos que lo siguiente va a controlar el comando '/ayuda'
+def command_productos(m):  # Definimos una función que resuleva lo que necesitemos.
+    id = m.chat.id  # Guardamos el ID de la conversación para poder responder.
+
+    client = MongoClient(mongo)
+    db = client.test
+    producto = db.producto
+    esta_usuario = producto.find_one({"id_usuario": id})
+    productos = producto.find({"id_usuario": id})
+
+    if esta_usuario == None:
+        bot.send_message(id, "No tiene ningun productos registrado")
+    else:
+        for p in productos:
+            bot.send_message(id, "Nombre: " + p["nombre"] + " Precio: " + str(p["precio"]) + " euros")
+
+#leave
 
 @bot.message_handler(commands=['leave'])  # Indicamos que lo siguiente va a controlar el comando '/ayuda'
 def command_leave(m):  # Definimos una función que resuleva lo que necesitemos.
@@ -62,15 +86,12 @@ def listener(messages):  # Con esto, estamos definiendo una función llamada 'li
     for m in messages:  # Por cada dato 'm' en el dato 'messages'
         client = MongoClient(mongo)
         db = client.test
-        #user = db.user
         producto = db.producto
-        #try:
-        #    id_bd = user.find({"id":m.chat.id})
-        #except:
-        #    print("error")
+
         tamano = len(m.text)
         texto = m.text[7:tamano]
-        if m.content_type == 'text' and m.text != "/start" and m.text != "/leave " + texto and m.text != "/leave":
+
+        if m.content_type == 'text' and m.text != "/start" and m.text != "/leave " + texto and m.text != "/leave" and m.text != "/productos":
             url = m.text
             bot.send_message(m.chat.id, "Buscando su producto")
 
@@ -82,10 +103,8 @@ def listener(messages):  # Con esto, estamos definiendo una función llamada 'li
             else: #si no esta lo introducimos
                 insert(m.chat.id, url)
                 bot.send_message(m.chat.id, "Su producto llamado: " + name)
-                bot.send_message(m.chat.id, "Tiene un precio actual de: " + obtenerPrecio(url))
+                bot.send_message(m.chat.id, "Tiene un precio actual de: " + obtenerPrecio(url) + " euros")
                 bot.send_message(m.chat.id, "Se le notificara cuando haya cambios de precio")
-                bot.send_message(m.chat.id, "Ira recibiendo actualizaciones de precios")
-
 
 bot.set_update_listener(listener)  #Así, le decimos al bot que utilice como función escuchadora nuestra función 'listener' declarada arriba.
 bot.polling()
