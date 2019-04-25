@@ -13,3 +13,13 @@ def insert(id, url):
     collection = db.producto
     consulta = {"id_usuario": id, "nombre": name, "precio": price, "url": url}
     collection.insert_one(consulta)
+
+def delete(id, url):
+    name = obtenerNombre(url)
+    price = obtenerPrecio(url)
+
+    client = MongoClient(mongo)
+    db = client.test
+    collection = db.producto
+    consulta = {"id_usuario": id, "nombre": name, "precio": price, "url": url}
+    collection.delete_one(consulta)
