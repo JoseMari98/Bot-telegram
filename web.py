@@ -10,21 +10,23 @@ response = requests.get(url)
 soup = BeautifulSoup(response.text, "html.parser")
 name = soup.find("span", {"id": "productTitle"}).text.lstrip().rstrip()
 price = soup.find("span", {"id": "priceblock_ourprice"}).text
+price = price.replace(",", ".")
+tamano = len(price)
+price = price[4:tamano]
 
+print(float(price), name)
 
-print(price, name)
+#client = MongoClient(mongo)
 
-client = MongoClient(mongo)
+#db = client.test
 
-db = client.test
+#collection = db.test
 
-collection = db.test
+#ejem = {"name":name,"price":price}
+#id = collection.insert_one(ejem).inserted_id
 
-ejem = {"name":name,"price":price}
-id = collection.insert_one(ejem).inserted_id
+#print(id)
 
-print(id)
-
-ejem1 = collection.find_one({"name":name})
-print(ejem1["name"])
+#ejem1 = collection.find_one({"name":name})
+#print(ejem1["name"])
 

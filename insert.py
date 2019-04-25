@@ -1,13 +1,12 @@
 from pymongo import MongoClient
 from private import mongo
+from gets import obtenerPrecio,obtenerNombre
 import requests
 from bs4 import BeautifulSoup
 
 def insert(id, url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, "html.parser")
-    name = soup.find("span", {"id": "productTitle"}).text.lstrip().rstrip()
-    price = soup.find("span", {"id": "priceblock_ourprice"}).text
+    name = obtenerNombre(url)
+    price = obtenerPrecio(url)
 
     client = MongoClient(mongo)
     db = client.test
