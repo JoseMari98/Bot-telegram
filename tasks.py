@@ -13,11 +13,12 @@ app = Celery("tasks", backend="rpc://", broker="pyamqp://guest@localhost//")
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Se llama cada 4 horas
-    sender.add_periodic_task(crontab(minute=0, hour='*/1'), analisis())
-    #sender.add_periodic_task(10, analisis.s())
+    #sender.add_periodic_task(crontab(minute=0, hour='*/1'), analisis())
+    sender.add_periodic_task(10, analisis.s())
 
 @app.task
 def analisis():
+    print("hola")
     client = MongoClient(mongo)
     db = client.test
     producto = db.producto
