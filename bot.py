@@ -39,8 +39,6 @@ def command_start(m):  # Definimos una función que resuleva lo que necesitemos.
     if usuario == None:
         user.insert_one(ejem)
         bot.send_message(id, "Registro completado")
-    else:
-        bot.send_message(id, "Ya estabas registrado previamente")
 
 #Productos
 
@@ -103,7 +101,7 @@ def listener(messages):  # Con esto, estamos definiendo una función llamada 'li
             else: #si no esta lo introducimos
                 insert(m.chat.id, url)
                 bot.send_message(m.chat.id, "Su producto llamado: " + name)
-                bot.send_message(m.chat.id, "Tiene un precio actual de: " + obtenerPrecio(url) + " euros")
+                bot.send_message(m.chat.id, "Tiene un precio actual de: " + str(obtenerPrecio(url)) + " euros")
                 bot.send_message(m.chat.id, "Se le notificara cuando haya cambios de precio")
 
 bot.set_update_listener(listener)  #Así, le decimos al bot que utilice como función escuchadora nuestra función 'listener' declarada arriba.

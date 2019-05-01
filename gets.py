@@ -14,4 +14,4 @@ def obtenerPrecio(url):
     price = price.replace(",", ".")
     tamano = len(price)
     price = price[4:tamano]
-    return price
+    return float(price)
